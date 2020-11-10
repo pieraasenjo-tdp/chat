@@ -24,6 +24,7 @@ $(function () {
     var data = encrypt(usr, key);
     const url = 'https://chat-mta.azurewebsites.net';
     var socket = io.connect(url, {
+        rejectUnauthorized: false,
         secure: true,
         query: `data=${data}`
     });
