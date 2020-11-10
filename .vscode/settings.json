@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/f844f35e-0324-4012-b5e6-713c3b10fa67/resourceGroups/RG-mta-dev/providers/Microsoft.Web/sites/WA-mta-chat-dev",
+    "appService.deploySubpath": "."
+}
