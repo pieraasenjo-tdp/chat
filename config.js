@@ -1,7 +1,7 @@
 module.exports = {
     development: {
         port: process.env.PORT || 3001, // React listening on 3000
-        url: 'http://127.0.0.1',
+        url: 'https://chat-mta.azurewebsites.net',
         env: 'development',
         saltingRounds: 10,
     },
