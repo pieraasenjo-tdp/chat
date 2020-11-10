@@ -65,29 +65,7 @@ const {
 } = require('./config');
 
 if (ENV === 'production') {
-    const SSL = production.sslPath; // Root path to certificates
-    const httpsOpts = {
-        cert: fs.readFileSync(path.join(SSL, 'server.cert')), // Your cert keys here
-        key: fs.readFileSync(path.join(SSL, 'server.key')),
-    };
-
-    const httpsServer = https.createServer(httpsOpts, app);
-
-    elastic
-        .ping()
-        .then(() => httpsServer.listen(production.port, () => {
-            process.stdout.write(`Server started at ${production.url}:${production.port}`);
-        }))
-        .catch(() => {
-            process.stdout.write('ElasticSearch server is not responding...');
-            process.exit(1);
-        });
-
-    global.io = require('socket.io').listen(httpsServer);
-
-    const src = app;
-
-    module.exports = src;
+    
 } else {
     const src = app;
     module.exports = src;

@@ -22,7 +22,7 @@ $(function () {
     };
     var key = "mta2020";
     var data = encrypt(usr, key);
-    const url = 'http://localhost:3001';
+    const url = 'https://chat-mta.azurewebsites.net';
     var socket = io.connect(url, {
         query: `data=${data}`
     });
