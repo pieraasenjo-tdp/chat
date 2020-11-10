@@ -90,7 +90,7 @@ if (ENV === 'production') {
     module.exports = src;
 } else {
     const server = http.createServer(app);
-    server.listen(3001, () => {
+    server.listen(process.env.PORT || 3001, () => {
         console.log("El app inicio en la dirección:" + development.url + ":" + development.port);
     });
     const io = require('socket.io')(server);
