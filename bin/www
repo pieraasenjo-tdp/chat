@@ -19,19 +19,181 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+// var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+// server.listen(port);
+// server.on('error', onError);
+// server.on('listening', onListening);
 
-/**
- * Normalize a port into a number, string, or false.
- */
+const server = http.createServer(app);
+    server.listen(port, () => {
+        console.log("INICIO EL APP CHAT");
+    });
+    const io = require('socket.io')(server);
+    //Send a message to all active rooms
+    const sendBroadcast = function (text) {
+        _.each(io.nsps['/'].adapter.rooms, function (sockets, room) {
+            var message = {
+                'room': room,
+                'username': 'ServerBot',
+                'msg': text,
+                'date': new Date()
+            };
+            io.to(room).emit('newMessage', message);
+        });
+    };
+
+    io.sockets.on('connection', socket => {
+        const _data = socket.handshake.query.data;
+        var key = "mta2020";
+
+        const usr = decrypt(_data, key);
+        usr.socketid = socket.id;
+
+        console.log('ws: ' + socket.id);
+        socket.emit('connected', 'Bienvenido a appmta');
+        socket.join(conf.mainroom);
+        socket.emit('subscriptionConfirmed', {
+            'sala': conf.mainroom,
+            'socketid': socket.id,
+            'usuario': usr.nombre
+        });
+        var data = {
+            'room': conf.mainroom,
+            'username': usr.nombre,
+            'msg': '----- Joined the room -----',
+            'socketid': socket.id
+        };
+        io.to(conf.mainroom).emit('userJoinsRoom', data);
+        //SE AÑADE AL ARRAY DE USUARIOS
+        ingresaUsuario(usr, socket.id);
+        // ingresaUsuario(usuarioid, socket.id, 'anonimo', conf.mainroom);
+        socket.on('subscribe', function (data) {
+            const usr = obtenerUsuarioActual(socket.id);
+            usr.room = data.sala;
+            const res = actualizarData(socket.id, usr);
+            Grupo.findOne({
+                'sala': data.sala
+            }, (err, grupo) => {
+                if (grupo) {
+                    // grupo.estado = 2;
+                } else {
+                    // grupo.estado = 1;
+                    //registro
+                    grupo = new Grupo();
+                    grupo.sala = data.sala;
+                    grupo.socketId = socket.id;
+                    grupo.estado = 1; // 3: estado en espera
+                    grupo.usuarios.push({
+                        usuarioId: 1,
+                        socketId: socket.id,
+                        canal: 1,
+                        rol: 1,
+                        nombres: 'nom prueba',
+                        apellidos: 'ape prueba'
+                    });
+                    console.log('GRUPO CREADO: ', grupo);
+
+                }
+
+                grupo.save((err, res) => {
+                    console.log('RES SAVE GROUP: ', res);
+                    if (err) console.log(err);
+                    socket.join(data.sala);
+                    socket.emit('subscriptionConfirmed', {
+                        'socketid': socket.id,
+                        'room': data.sala,
+                        'estado': grupo.estado
+                    });
+                    // Notify subscription to all users in room
+                    var message = {
+                        'room': data.sala,
+                        'estado': res.estado,
+                        'username': usr.username,
+                        'msg': '----- Ingreso a la sala -----',
+                        'socketid': socket.id
+                    };
+                    // 'room': conf.mainroom,
+                    // 'username': usuarioid,
+                    // // 'username': 'anonimo',
+                    // 'msg': '----- Joined the room -----',
+                    // 'socketid': socket.id
+                    io.to(data.sala).emit('userJoinsRoom', message);
+                });
+            });
+        });
+        socket.on('unsubscribe', function (data) {
+            const usr = obtenerUsuarioActual(socket.id);
+            const saleDeLaSala = usr.room;
+            if (data.sala != conf.mainroom) {
+                usr.room = conf.mainroom;
+                const res = actualizarData(socket.id, usr);
+                socket.leave(data.sala);
+                socket.emit('unsubscriptionConfirmed', {
+                    'sala': data.sala,
+                    'username': data.usuario,
+                    'socketid': socket.id
+                });
+                var message = {
+                    'room': saleDeLaSala,
+                    'username': usr.username,
+                    'msg': '----- Left the room -----',
+                    'socketid': socket.id
+                };
+                io.to(data.sala).emit('userLeavesRoom', message);
+            } else console.log('No puede salir de su sesion!!!');
+        });
+        socket.on('getRooms', function (data) {
+            socket.emit('roomsReceived', socket.rooms);
+        });
+        socket.on('getUsersInRoom', function (req) {
+            const usuarios = obtenerUsuarioSala(req.room);
+            io.to(req.room).emit('usuariosEnSocket', usuarios);
+        });
+        //SE CREO UN TICKET NUEVO
+        socket.on('bandejamta', (req) => {
+            //BUSCAR A TODOS LOS USUARIOS PARA ENVIAR LA ACCION DE ACTUALIZAR BANDEJA
+            io.to(conf.mainroom).emit('actualizarBandeja', req);
+        });
+        socket.on('setNickname', function (data) {
+            const usr = obtenerUsuarioActual(socket.id);
+            const usr_old = usr.username;
+            usr.username = data.username;
+            const res = actualizarData(socket.id, usr);
+
+            io.of('/').in(usr.room).clients((error, clientes) => {
+                var info = {
+                    'room': usr.room,
+                    'oldUsername': usr_old,
+                    'newUsername': usr.username,
+                    'id': socket.id
+                };
+                io.to(usr.room).emit('userNicknameUpdated', info);
+            });
+        });
+        socket.on('newMessage', function (data) {
+            const usr = obtenerUsuarioActual(socket.id);
+            io.to(data.room).emit('newMessage', {
+                room: data.room,
+                message: data.message,
+                date: new Date(),
+                type: data.type,
+                author: usr.autor,
+            });
+        });
+        socket.on('disconnect', function () {
+            const desconecta = obtenerUsuarioActual(this.id);
+            desconecta.activo = false;
+            actualizarData(this.id, desconecta);
+            const usuarios = obtenerUsuariosActivos('salaPrincipal');
+            io.to('salaPrincipal').emit('usuariosEnSocket', usuarios);
+        });
+    });
+
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
