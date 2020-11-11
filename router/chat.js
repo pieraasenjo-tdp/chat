@@ -27,6 +27,7 @@ module.exports = (router) => {
             Grupo.findOne({
                 'sala': req.body.sala
             }, (err, data) => {
+                console.log('data:'+data);
                 if(err) console.log(err);
                 if(data){
                     console.log('existe data...');
@@ -37,6 +38,7 @@ module.exports = (router) => {
                     });
                 }
             });
+            console.log(req.body.sala);
         });
 
     router.route('/obtenerchatporsala')
