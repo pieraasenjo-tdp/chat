@@ -3,7 +3,14 @@
 /**
  * Module dependencies.
  */
-
+const {
+    ingresaUsuario,
+    saleUsuario,
+    obtenerUsuarioActual,
+    obtenerUsuarioSala,
+    actualizarData,
+    obtenerUsuariosActivos
+} = require('../services/usuarios');
 var app = require('../index');
 var debug = require('debug')('myexpressapp:server');
 var http = require('http');

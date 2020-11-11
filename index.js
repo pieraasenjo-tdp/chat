@@ -17,14 +17,6 @@ const {
     actualizarData,
     obtenerUsuariosActivos
 } = require('./services/usuarios');
-var conf = {
-    port: 8888,
-    debug: false,
-    dbPort: 6379,
-    dbHost: '127.0.0.1',
-    dbOptions: {},
-    mainroom: 'salaPrincipal'
-};
 const app = express();
 const router = express.Router();
 const ENV = process.env.NODE_ENV;
