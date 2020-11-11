@@ -183,9 +183,9 @@ $(function () {
             });
             socket.emit('getRooms', {});
             socket.emit('getUsersInRoom', {
-                room: usr.room
+                room: 'salaPrincipal'
             });
-            console.log('Sala Actual: ' + usr.room);
+            console.log('Sala Actual: salaPrincipal');
         } else {
             console.log('------------------------------');
             console.log('Se encuentra desconectado');
