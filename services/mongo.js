@@ -8,10 +8,10 @@ const databaseOptions = {
     useFindAndModify: false,
 };
 
-mongoose.connect("mongodb://" + process.env.COSMOSDB_HOST + ":" + process.env.COSMOSDB_PORT + "/" + process.env.COSMOSDB_DBNAME + "?ssl=true&replicaSet=globaldb", {
+mongoose.connect("mongodb://account-mta-dev.mongo.cosmos.azure.com:10255/chatmta?ssl=true&replicaSet=globaldb", {
         auth: {
-            user: process.env.COSMODDB_USER,
-            password: process.env.COSMOSDB_PASSWORD
+            user: "account-mta-dev",
+            password: "ivW5uPPnDpzL6Z1qxBBFXD0PEBlOAL83lsrs4K4JgMA0cwxsOCwkLFdtOlsFCyJxfrwUJv0yAU4aylWoesLeBQ=="
         },
         useNewUrlParser: true,
         useUnifiedTopology: true,

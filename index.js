@@ -1,4 +1,3 @@
-require('dotenv').config();
 require('./services/mongo');
 
 const Grupo = require('./model/Chat');
@@ -59,10 +58,6 @@ if (ENV === 'production') {
     app.use(logger('dev'));
     app.use('/', routes(router));
 }
-const {
-    production,
-    development
-} = require('./config');
 
 if (ENV === 'production') {
     
