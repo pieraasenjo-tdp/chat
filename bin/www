@@ -19,6 +19,15 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
+var conf = {
+    port: 8888,
+    debug: false,
+    dbPort: 6379,
+    dbHost: '127.0.0.1',
+    dbOptions: {},
+    mainroom: 'salaPrincipal'
+};
+
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
@@ -36,13 +45,27 @@ app.set('port', port);
 // server.on('error', onError);
 // server.on('listening', onListening);
 
+function decrypt(o, salt) {
+    o = decodeURI(o);
+    if (salt && o.indexOf(salt) != 0)
+        throw new Error('object cannot be decrypted');
+    o = o.substring(salt.length).split('');
+    for (var i = 0, l = o.length; i < l; i++)
+        if (o[i] == '{')
+            o[i] = '}';
+        else if (o[i] == '}')
+        o[i] = '{';
+    return JSON.parse(o.join(''));
+}
+
 const server = http.createServer(app);
     server.listen(port, () => {
         console.log("INICIO EL APP CHAT");
     });
-    const io = require('socket.io')(server,{
-        transports: ["websocket"]
-    });
+
+    const io = require('socket.io');
+    var socket = io.listen(server); 
+
     //Send a message to all active rooms
     const sendBroadcast = function (text) {
         _.each(io.nsps['/'].adapter.rooms, function (sockets, room) {
@@ -56,7 +79,7 @@ const server = http.createServer(app);
         });
     };
 
-    io.sockets.on('connection', socket => {
+    socket.on('connection', socket => {
         const _data = socket.handshake.query.data;
         var key = "mta2020";
 
@@ -77,7 +100,7 @@ const server = http.createServer(app);
             'msg': '----- Joined the room -----',
             'socketid': socket.id
         };
-        io.to(conf.mainroom).emit('userJoinsRoom', data);
+        socket.to(conf.mainroom).emit('userJoinsRoom', data);
         //SE AÑADE AL ARRAY DE USUARIOS
         ingresaUsuario(usr, socket.id);
         // ingresaUsuario(usuarioid, socket.id, 'anonimo', conf.mainroom);
