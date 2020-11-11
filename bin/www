@@ -41,8 +41,8 @@ const server = http.createServer(app);
         console.log("INICIO EL APP CHAT");
     });
     const io = require('socket.io')(server,{
-        transports: ["websocket"]
-    });
+        perMessageDeflate :false
+     });
     //Send a message to all active rooms
     const sendBroadcast = function (text) {
         _.each(io.nsps['/'].adapter.rooms, function (sockets, room) {
