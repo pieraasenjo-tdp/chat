@@ -23,10 +23,12 @@ module.exports = (router) => {
         
         router.route('/guardarmensajes')
         .post((req, res) => {
+            console.log('inicia guardar...');
             Grupo.findOne({
                 'sala': req.body.sala
             }, (err, data) => {
                 if(data){
+                    console.log('existe data...');
                     data.mensajes.push(req.body.msg);
                     data.save();
                     res.json({
