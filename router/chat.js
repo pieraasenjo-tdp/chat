@@ -27,6 +27,7 @@ module.exports = (router) => {
             Grupo.findOne({
                 'sala': req.body.sala
             }, (err, data) => {
+                if(err) console.log(err);
                 if(data){
                     console.log('existe data...');
                     data.mensajes.push(req.body.msg);
