@@ -64,18 +64,17 @@ const server = http.createServer(app);
     });
     const io = require('socket.io')(server);
     //Send a message to all active rooms
-    const sendBroadcast = function (text) {
-        _.each(io.nsps['/'].adapter.rooms, function (sockets, room) {
-            var message = {
-                'room': room,
-                'username': 'ServerBot',
-                'msg': text,
-                'date': new Date()
-            };
-            io.to(room).emit('newMessage', message);
-        });
-    };
-
+    // const sendBroadcast = function (text) {
+    //     _.each(io.nsps['/'].adapter.rooms, function (sockets, room) {
+    //         var message = {
+    //             'room': room,
+    //             'username': 'ServerBot',
+    //             'msg': text,
+    //             'date': new Date()
+    //         };
+    //         io.to(room).emit('newMessage', message);
+    //     });
+    // };
     io.sockets.on('connection', socket => {
         const _data = socket.handshake.query.data;
         var key = "mta2020";
