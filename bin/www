@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+const Grupo = require('../model/Chat');
 const {
     ingresaUsuario,
     saleUsuario,
@@ -14,7 +15,6 @@ const {
 var app = require('../index');
 var debug = require('debug')('myexpressapp:server');
 var http = require('http');
-
 /**
  * Get port from environment and store in Express.
  */
