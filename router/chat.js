@@ -36,6 +36,8 @@ module.exports = (router) => {
                     res.json({
                         mensaje: 'ok'
                     });
+                }else{
+                    res.json([]);
                 }
             });
             console.log(req.body.sala);
