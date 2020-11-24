@@ -178,8 +178,8 @@ const server = http.createServer(app);
         socket.on('getRooms', function (data) {
             socket.emit('roomsReceived', socket.rooms);
         });
-        socket.on('actualizarBandeja', function (data) {
-            socket.emit('derivacion', '');
+        socket.on('volverabandeja', function (data) {
+            socket.emit('derivacion', data.sala);
         });
         socket.on('getUsersInRoom', function (req) {
             const usuarios = obtenerUsuarioSala(req.room);
