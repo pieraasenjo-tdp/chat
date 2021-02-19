@@ -29,7 +29,6 @@ function actualizarData(socketid, usuario) {
 
 function obtenerUsuarioActual(socketid) {
     const usr = usuarios.find(u => u.socketid === socketid);
-    console.log('Usuario Actual:' + JSON.stringify(usr));
     return usr;
 }
 

@@ -1,8 +1,3 @@
-#!/usr/bin/env node
-
-/**
- * Module dependencies.
- */
 const Grupo = require('../model/Chat');
 const {
     ingresaUsuario,
@@ -15,9 +10,7 @@ const {
 var app = require('../index');
 var debug = require('debug')('myexpressapp:server');
 var http = require('http');
-/**
- * Get port from environment and store in Express.
- */
+var moment = require('moment');
 
 var conf = {
     port: 8888,
@@ -30,20 +23,6 @@ var conf = {
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-
-// var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-// server.listen(port);
-// server.on('error', onError);
-// server.on('listening', onListening);
 
 function decrypt(o, salt) {
     o = decodeURI(o);
@@ -60,7 +39,9 @@ function decrypt(o, salt) {
 
 const server = http.createServer(app);
     server.listen(port, () => {
-        console.log("INICIO APP:"+port);
+        console.log(moment(new Date()).format('DD/MM/yyyy h:mm a'));
+        console.log(new Date());
+        console.log("INICIO APP: " + port);
     });
     const io = require('socket.io')(server);
     //Send a message to all active rooms
@@ -80,6 +61,7 @@ const server = http.createServer(app);
         var key = "mta2020";
 
         const usr = decrypt(_data, key);
+        console.log('QUERY STRING USR:',usr);
         usr.socketid = socket.id;
 
         console.log('ws: ' + socket.id);
@@ -129,7 +111,6 @@ const server = http.createServer(app);
                 }
 
                 grupo.save((err, res) => {
-                    console.log('RES SAVE GROUP: ', res);
                     if (err) console.log(err);
                     socket.join(data.sala);
                     socket.emit('subscriptionConfirmed', {
@@ -178,8 +159,12 @@ const server = http.createServer(app);
         socket.on('getRooms', function (data) {
             socket.emit('roomsReceived', socket.rooms);
         });
-        socket.on('volverabandeja', function (data) {
-            socket.emit('derivacion', data.sala);
+        socket.on('bandejaAuditoria', function (data) {
+            io.to('salaPrincipal').emit('actualizarBandejaAuditoria', data.sala);
+        });
+        socket.on('volverBandeja', function (data) {
+            console.log('Ingreso a actualizar bandeja:',data);
+            io.to('salaPrincipal').emit('derivacion', data.sala);
         });
         socket.on('getUsersInRoom', function (req) {
             const usuarios = obtenerUsuarioSala(req.room);
@@ -187,7 +172,8 @@ const server = http.createServer(app);
         });
         //SE CREO UN TICKET NUEVO
         socket.on('bandejamta', (req) => {
-            //BUSCAR A TODOS LOS USUARIOS PARA ENVIAR LA ACCION DE ACTUALIZAR BANDEJA
+            console.log('req:',req);
+            console.log('res:','metodo: actualizarBandeja sala:' + conf.mainroom);
             io.to(conf.mainroom).emit('actualizarBandeja', req);
         });
         socket.on('setNickname', function (data) {
