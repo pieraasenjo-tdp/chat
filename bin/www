@@ -177,6 +177,12 @@ const server = http.createServer(app);
             console.log('res:','metodo: actualizarBandeja sala:' + conf.mainroom);
             io.to(conf.mainroom).emit('actualizarBandeja', req);
         });
+
+        socket.on('bandejaTdp', (req) => {
+        console.log('ingreso a bandejaTdp:',req);
+                    io.to(conf.mainroom).emit('actualizarBandejaTdp', req);
+                });
+
         socket.on('setNickname', function (data) {
             const usr = obtenerUsuarioActual(socket.id);
             const usr_old = usr.username;
