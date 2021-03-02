@@ -58,6 +58,7 @@ const server = http.createServer(app);
     //     });
     // };
     io.sockets.on('connection', socket => {
+    console.log("SE CONECTA:",socket.handshake.query.data);
         const _data = socket.handshake.query.data;
         var key = "mta2020";
 
