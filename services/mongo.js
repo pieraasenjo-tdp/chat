@@ -7,7 +7,7 @@ const databaseOptions = {
     useCreateIndex: true,
     useFindAndModify: false,
 };
-
+console.log('prueba');
 //CER
 mongoose.connect("mongodb://account-mta-cert.mongo.cosmos.azure.com:10255/chatmta?ssl=true&replicaSet=globaldb", {
         auth: {
