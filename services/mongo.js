@@ -9,10 +9,10 @@ const databaseOptions = {
 };
 
 //CER
-mongoose.connect("mongodb://account-mta-cert.mongo.cosmos.azure.com:10255/chatmta?ssl=true&replicaSet=globaldb", {
+mongoose.connect("mongodb://account-mta-dev.mongo.cosmos.azure.com:10255/chatmta?ssl=true&replicaSet=globaldb", {
         auth: {
-            user: "account-mta-cert",
-            password: "KNuNP2XZeoOFTsJqq8S0BYEsHk6zuMGvyHtliAIN52EcNkMGJJnxFrzQHS3MYm4UvMd6AsgjtmVOB5arooqsqQ=="
+            user: "account-mta-dev",
+            password: "ivW5uPPnDpzL6Z1qxBBFXD0PEBlOAL83lsrs4K4JgMA0cwxsOCwkLFdtOlsFCyJxfrwUJv0yAU4aylWoesLeBQ=="
         },
         useNewUrlParser: true,
         useUnifiedTopology: true,
