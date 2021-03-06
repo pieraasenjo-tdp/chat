@@ -32,5 +32,5 @@ jobs:
       with:
         app-name: 'WA-mta-chat-cert'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_8c95084711594ba68f53ea068997e589 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_2a9e4622be51494182301d18fc437556 }}
         package: .
