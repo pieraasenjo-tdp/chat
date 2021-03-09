@@ -12,7 +12,7 @@ const databaseOptions = {
 mongoose.connect("mongodb://account-mta-prod.mongo.cosmos.azure.com:10255/chatmta?ssl=true&replicaSet=globaldb", {
         auth: {
             user: "account-mta-prod",
-            password: "KNuNP2XZeoOFTsJqq8S0BYEsHk6zuMGvyHtliAIN52EcNkMGJJnxFrzQHS3MYm4UvMd6AsgjtmVOB5arooqsqQ=="
+            password: "HJfzXSHjez3j35aG5IgtDhYdRsuzQuAAax1aRR1gdqNaR4v6eqfZYmC6vFZfJeVuQbDaJxmdS4hP2jQ9Ttkzjw=="
         },
         useNewUrlParser: true,
         useUnifiedTopology: true,
